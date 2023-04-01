@@ -9,6 +9,7 @@ RESTAURANTS = dict() # {restaurant_id: websocket, ...}
 CUSTOMERS = dict() # {customer_id: websocket, ...}
 
 async def handler(websocket, path):
+    role = None # Assign a default value to the variable
     try:
         # Extract the access token from the headers of the websocket request
         token = websocket.request_headers.get("access_token")
