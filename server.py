@@ -15,6 +15,7 @@ async def handler(websocket, path):
     try:
         async for websocket_message in websocket:
             message = json.loads(websocket_message)
+            print("message")
             print(message)
         # Extract the access token from the query parameters of the websocket request
         query_params = parse_qs(urlparse(path).query)
@@ -24,6 +25,8 @@ async def handler(websocket, path):
 
         # Verify and decode the JWT
         payload = jwt.decode(token, os.environ.get("SECRET_KEY_WS"), algorithms=['HS256'])
+        print("payload")
+        print(payload)
         expiration_time = datetime.datetime.fromtimestamp(payload['exp'])
 
         if expiration_time < datetime.datetime.now():
