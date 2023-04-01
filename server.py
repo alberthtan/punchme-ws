@@ -10,6 +10,7 @@ RESTAURANTS = dict() # {restaurant_id: websocket, ...}
 CUSTOMERS = dict() # {customer_id: websocket, ...}
 
 async def handler(websocket, path):
+    print("handler")
     role = None
     try:
         # Extract the access token from the query parameters of the websocket request
