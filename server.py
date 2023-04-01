@@ -58,7 +58,7 @@ async def handler(websocket, path):
 
 async def handle_customer(websocket, id):
     # Handle the websocket connection for a customer
-    print("connecting customer with id: " + id)
+    print("connecting customer with id: " + str(id))
     
     CUSTOMERS[id] = websocket
 
@@ -77,7 +77,7 @@ async def handle_customer(websocket, id):
 
 async def handle_restaurant(websocket, id):
     # Handle the websocket connection for a restaurant
-    print("connecting restaurant with id: " + id)
+    print("connecting restaurant with id: " + str(id))
 
     RESTAURANTS[id] = websocket
 
