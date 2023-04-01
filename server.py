@@ -4,15 +4,17 @@ import os
 import jwt
 import datetime
 import json
+from urllib.parse import parse_qs, urlparse
 
 RESTAURANTS = dict() # {restaurant_id: websocket, ...}
 CUSTOMERS = dict() # {customer_id: websocket, ...}
 
 async def handler(websocket, path):
-    role = None # Assign a default value to the variable
+    role = None
     try:
-        # Extract the access token from the headers of the websocket request
-        token = websocket.request_headers.get("access_token")
+        # Extract the access token from the query parameters of the websocket request
+        query_params = parse_qs(urlparse(websocket.request_uri).query)
+        token = query_params.get("access_token", [None])[0]
         if not token:
             raise ValueError("Missing access token")
 
