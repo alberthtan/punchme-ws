@@ -13,7 +13,7 @@ async def handler(websocket, path):
     role = None
     try:
         # Extract the access token from the query parameters of the websocket request
-        query_params = parse_qs(urlparse(websocket.request_uri).query)
+        query_params = parse_qs(urlparse(path).query)
         token = query_params.get("access_token", [None])[0]
         if not token:
             raise ValueError("Missing access token")
