@@ -67,14 +67,16 @@ async def handler(websocket, path):
 async def handle_customer(websocket, id, message):
     # Handle the websocket connection for a customer
     print("connecting customer with id: " + str(id))
+    print("message: " + str(message))
     
     CUSTOMERS[id] = websocket
 
     if "restaurant_id" in message:
+        print("sending to restaurant " + str(message["restaurant_id"]))
         restaurant_websocket = RESTAURANTS.get(message["restaurant_id"])
+        print(restaurant_websocket)
         if restaurant_websocket:
             json_message = json.dumps({"scanned": True})
-            print("sending message to restaurant")
             try:
                 await restaurant_websocket.send(json_message)
             except websockets.ConnectionClosed:
@@ -84,14 +86,16 @@ async def handle_customer(websocket, id, message):
 async def handle_restaurant(websocket, id, message):
     # Handle the websocket connection for a restaurant
     print("connecting restaurant with id: " + str(id))
+    print("message: " + str(message))
 
     RESTAURANTS[id] = websocket
 
     if "customer_id" in message:
+        print("sending to customer " + str(message["customer_id"]))
         customer_websocket = CUSTOMERS.get(message["customer_id"])
+        print(customer_websocket)
         if customer_websocket:
             json_message = json.dumps({"scanned": True})
-            print("sending message to customer")
             try:
                 await customer_websocket.send(json_message)
             except websockets.ConnectionClosed:
