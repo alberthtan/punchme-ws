@@ -17,20 +17,17 @@ async def handler(websocket, path):
 
         # Verify and decode the JWT
         payload = jwt.decode(token, os.environ.get("SECRET_KEY_WS"), algorithms=['HS256'])
+        expiration_time = datetime.datetime.fromtimestamp(payload['exp'])
+
+        if expiration_time < datetime.datetime.now():
+            # Token has expired
+            raise ValueError("Token expired")
 
         # Extract the user information from the payload
         id = payload.get("id")
         role = payload.get("role")
-        timestamp_unformatted = payload.get("timestamp")
-        if id is None or role is None or timestamp_unformatted is None:
-            raise ValueError("Missing information")
-        
-        timestamp = datetime.datetime.fromtimestamp(timestamp_unformatted)
-
-        # Check if the timestamp is within the past one minute of the current time
-        now = datetime.datetime.now()
-        if timestamp < now - datetime.timedelta(minutes=1):
-            raise ValueError("Token expired")
+        if id is None or role is None:
+            raise ValueError("Missing user information")
 
         if role == "CUSTOMER":
             await handle_customer(websocket, id)
@@ -65,7 +62,7 @@ async def handle_customer(websocket, id):
         message = json.loads(websocket_message)
 
         if "restaurant_id" in message:
-            restaurant_websocket = RESTAURANTS.get("restaurant_id")
+            restaurant_websocket = RESTAURANTS.get(message["restaurant_id"])
             if restaurant_websocket:
                 json_message = json.dumps({"message": "scanned"})
                 try:
@@ -83,7 +80,7 @@ async def handle_restaurant(websocket, id):
         message = json.loads(websocket_message)
 
         if "customer_id" in message:
-            customer_websocket = CUSTOMERS.get("customer_id")
+            customer_websocket = CUSTOMERS.get(message["customer_id"])
             if customer_websocket:
                 json_message = json.dumps({"message": "scanned"})
                 try:
