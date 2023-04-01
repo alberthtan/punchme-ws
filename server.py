@@ -44,6 +44,18 @@ async def handler(websocket, path):
         print(f"Error: {e}")
         await websocket.close()
 
+     # WEBSOCKET CLOSES
+    finally:
+        # Remove the WebSocket from the appropriate dictionary
+        if role == "CUSTOMER":
+            CUSTOMERS.pop(id, None)
+            print("customers clean up")
+            print(CUSTOMERS)
+        elif role == "RESTAURANT":
+            RESTAURANTS.pop(id, None)
+            print("restaurants clean up")
+            print(RESTAURANTS)
+
 async def handle_customer(websocket, id):
     # Handle the websocket connection for a customer
     
