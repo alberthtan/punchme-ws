@@ -94,7 +94,13 @@ async def handle_restaurant(websocket, id, message):
     if "customer_id" in message:
         print("sending to customer " + str(message["customer_id"]))
         customer_websocket = CUSTOMERS.get(message["customer_id"])
-
+        print(customer_websocket)
+        if customer_websocket:
+            json_message = json.dumps({"scanned": True})
+            try:
+                await customer_websocket.send(json_message)
+            except websockets.ConnectionClosed:
+                pass
 
 async def main():
     try: 
