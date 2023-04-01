@@ -41,9 +41,9 @@ async def handler(websocket, path):
                 raise ValueError("Missing user information")
 
             if role == "CUSTOMER":
-                await handle_customer(websocket, id)
+                await handle_customer(websocket, id, message)
             elif role == "RESTAURANT":
-                await handle_restaurant(websocket, id)
+                await handle_restaurant(websocket, id, message)
             else:
                 raise ValueError("Missing role")
 
@@ -64,44 +64,38 @@ async def handler(websocket, path):
             print("restaurants clean up")
             print(RESTAURANTS)
 
-async def handle_customer(websocket, id):
+async def handle_customer(websocket, id, message):
     # Handle the websocket connection for a customer
     print("connecting customer with id: " + str(id))
     
     CUSTOMERS[id] = websocket
 
-    async for websocket_message in websocket:
-        message = json.loads(websocket_message)
-
-        if "restaurant_id" in message:
-            restaurant_websocket = RESTAURANTS.get(message["restaurant_id"])
-            if restaurant_websocket:
-                json_message = json.dumps({"scanned": True})
-                print("sending message to restaurant")
-                try:
-                    await restaurant_websocket.send(json_message)
-                except websockets.ConnectionClosed:
-                    pass
+    if "restaurant_id" in message:
+        restaurant_websocket = RESTAURANTS.get(message["restaurant_id"])
+        if restaurant_websocket:
+            json_message = json.dumps({"scanned": True})
+            print("sending message to restaurant")
+            try:
+                await restaurant_websocket.send(json_message)
+            except websockets.ConnectionClosed:
+                pass
 
 
-async def handle_restaurant(websocket, id):
+async def handle_restaurant(websocket, id, message):
     # Handle the websocket connection for a restaurant
     print("connecting restaurant with id: " + str(id))
 
     RESTAURANTS[id] = websocket
 
-    async for websocket_message in websocket:
-        message = json.loads(websocket_message)
-
-        if "customer_id" in message:
-            customer_websocket = CUSTOMERS.get(message["customer_id"])
-            if customer_websocket:
-                json_message = json.dumps({"scanned": True})
-                print("sending message to customer")
-                try:
-                    await customer_websocket.send(json_message)
-                except websockets.ConnectionClosed:
-                    pass
+    if "customer_id" in message:
+        customer_websocket = CUSTOMERS.get(message["customer_id"])
+        if customer_websocket:
+            json_message = json.dumps({"scanned": True})
+            print("sending message to customer")
+            try:
+                await customer_websocket.send(json_message)
+            except websockets.ConnectionClosed:
+                pass
 
 async def main():
     try: 
