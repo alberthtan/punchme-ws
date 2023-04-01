@@ -13,40 +13,11 @@ async def handler(websocket, path):
     print("handler")
     role = None
     try:
-        # Extract the access token from the query parameters of the websocket request
-        query_params = parse_qs(urlparse(path).query)
-        token = query_params.get("access_token", [None])[0]
-        if not token:
-            raise ValueError("Missing access token")
-
-        # Verify and decode the JWT
-        payload = jwt.decode(token, os.environ.get("SECRET_KEY_WS"), algorithms=['HS256'])
-        print("payload")
-        print(payload)
-        expiration_time = datetime.datetime.fromtimestamp(payload['exp'])
-
-        if expiration_time < datetime.datetime.now():
-            # Token has expired
-            raise ValueError("Token expired")
-
-        # Extract the user information from the payload
-        id = payload.get("id")
-        role = payload.get("role")
-        if id is None or role is None:
-            raise ValueError("Missing user information")
-
-        if role == "CUSTOMER":
-            await handle_customer(websocket, id)
-        elif role == "RESTAURANT":
-            await handle_restaurant(websocket, id)
-        else:
-            raise ValueError("Missing role")
-        
-        
         async for websocket_message in websocket:
             message = json.loads(websocket_message)
             print("message")
             print(message)
+
             # Extract the access token from the query parameters of the websocket request
             query_params = parse_qs(urlparse(path).query)
             token = query_params.get("access_token", [None])[0]
@@ -81,7 +52,7 @@ async def handler(websocket, path):
         print(f"Error: {e}")
         await websocket.close()
 
-     # WEBSOCKET CLOSES
+    # WEBSOCKET CLOSES
     finally:
         # Remove the WebSocket from the appropriate dictionary
         if role == "CUSTOMER":
