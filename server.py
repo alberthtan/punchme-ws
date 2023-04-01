@@ -13,6 +13,9 @@ async def handler(websocket, path):
     print("handler")
     role = None
     try:
+        async for websocket_message in websocket:
+            message = json.loads(websocket_message)
+            print(message)
         # Extract the access token from the query parameters of the websocket request
         query_params = parse_qs(urlparse(path).query)
         token = query_params.get("access_token", [None])[0]
