@@ -67,7 +67,6 @@ async def handler(websocket, path):
             CUSTOMERS.pop(id, None)
             print("customers clean up")
             print(CUSTOMERS)
-            print(RESTAURANTS)
         elif role == "RESTAURANT":
             RESTAURANTS.pop(id, None)
             print("restaurants clean up")
