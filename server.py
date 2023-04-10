@@ -26,6 +26,7 @@ async def handler(websocket, path):
 
         if expiration_time < datetime.datetime.now():
             # Token has expired
+            print("token expired")
             raise ValueError("Token expired")
 
         # Extract the user information from the payload
