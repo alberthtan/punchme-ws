@@ -66,6 +66,7 @@ async def handler(websocket, path):
             CUSTOMERS.pop(id, None)
             print("customers clean up")
             print(CUSTOMERS)
+            print(RESTAURANTS)
         elif role == "RESTAURANT":
             RESTAURANTS.pop(id, None)
             print("restaurants clean up")
@@ -77,6 +78,7 @@ async def handle_customer(websocket, id, message):
 
     if "restaurant_id" in message:
         print("sending to restaurant " + str(message["restaurant_id"]))
+        print(RESTAURANTS)
         restaurant_websocket = RESTAURANTS.get(message["restaurant_id"])
         print(restaurant_websocket)
         if restaurant_websocket:
