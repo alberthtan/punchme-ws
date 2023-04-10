@@ -80,6 +80,7 @@ async def handle_customer(websocket, id, message):
     if "restaurant_id" in message:
         print("sending to restaurant " + str(message["restaurant_id"]))
         print(RESTAURANTS)
+        print(type(message["restaurant_id"]))
         restaurant_websocket = RESTAURANTS.get(message["restaurant_id"])
         print(restaurant_websocket)
         if restaurant_websocket:
