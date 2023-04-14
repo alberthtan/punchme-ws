@@ -79,6 +79,7 @@ async def handle_customer(websocket, id, message):
     if "restaurant_id" in message:
         print("sending to restaurant " + str(message["restaurant_id"]))
         restaurant_websocket = RESTAURANTS.get(int(message["restaurant_id"]))
+        print(RESTAURANTS)
         print(restaurant_websocket)
         if restaurant_websocket:
             json_message = json.dumps({"scanned": True})
