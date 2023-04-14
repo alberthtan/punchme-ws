@@ -66,7 +66,7 @@ async def handle_customer(websocket, id):
         if "restaurant_id" in message:
             restaurant_websocket = RESTAURANTS.get(message["restaurant_id"])
             if restaurant_websocket:
-                json_message = json.dumps({"message": "scanned"})
+                json_message = json.dumps({"message": "scanned", "customer": id})
                 try:
                     await restaurant_websocket.send(json_message)
                 except websockets.ConnectionClosed:
